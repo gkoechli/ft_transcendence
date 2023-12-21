@@ -74,3 +74,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* CUSTOM CSS */
+@layer components {
+	#gradient-canvas {
+		--gradient-color-1: #043D5D;
+		--gradient-color-2: #032E46;
+		--gradient-color-3: #000;
+		--gradient-color-4: #111a32;
+	}
+}

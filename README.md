@@ -29,3 +29,8 @@ Then install the dependencies:
 pnpm install
 pnpm dev       # starts local server for both frontend (NextJS) and backend (NestJS)
 ```
+
+## Ressources
+
+- [Fullstack TypeScript Monorepo: NestJS, NextJS 13 & tRPC](https://www.youtube.com/watch?v=_B093QdDO7g)
+- 

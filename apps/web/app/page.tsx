@@ -1,4 +1,4 @@
-import { trpc } from "./trpc";
+import { trpc } from "../utils/trpc";
 
 export default async function Home() {
   const response = await trpc.hello.query({});

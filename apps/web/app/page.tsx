@@ -1,3 +1,4 @@
+import { Button } from "@web/components/ui/button";
 import { trpc } from "../utils/trpc";
 
 export default async function Home() {

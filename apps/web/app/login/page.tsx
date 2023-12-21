@@ -5,6 +5,7 @@ import { Gradient } from "../../components/gradient/gradient";
 import { useEffect } from "react";
 import { Si42 } from "react-icons/si";
 import { Button } from "@web/components/ui/button";
+import Link from "next/link";
 
 export default function Home() {
 	useEffect(() => {
@@ -16,7 +17,7 @@ export default function Home() {
 		<AnimatePresence>
 			<div className="min-h-[100vh] sm:min-h-screen w-screen flex flex-col relative bg-gray-950 font-inter overflow-hidden">
 				<svg
-					style={{ filter: "contrast(125%) brightness(100%)" }}
+					style={{ filter: "contrast(125%) brightness(90%)" }}
 					className="fixed z-[1] w-full h-full opacity-[35%]"
 				>
 					<filter id="noise">
@@ -45,13 +46,15 @@ export default function Home() {
 						<h2 className="mt-10 text-2xl font-bold leading-9 tracking-tight">
 							Sign in to your account
 						</h2>
-						<Button className="max-w-[32rem] w-full">
-							<Si42 className="w-4 h-4" />
-						</Button>
+						<Link href={"/dashboard"}>
+							<Button className="max-w-[32rem] w-full">
+								<Si42 className="w-4 h-4" />
+							</Button>
+						</Link>
 					</motion.div>
 				</main>
 				<div
-					className="fixed top-0 right-0 w-[80%] md:w-1/2 h-screen bg-[#1F2B3A]/20 max-md:hidden"
+					className="fixed top-0 right-0 w-[80%] md:w-1/2 h-screen bg-[#09263F]/20 max-md:hidden"
 					style={{
 						clipPath:
 							"polygon(100px 0,100% 0,calc(100% + 225px) 100%, 480px 100%)",

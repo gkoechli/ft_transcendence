@@ -14,7 +14,7 @@ export default async function RootLayout({
 					<div className="w-screen">
 						<TopNav />
 						<div className="mx-auto max-w-7xl sm:px-6 lg:px-8 py-8">
-							<main className="bg-gray-800/50 px-4 py-5 shadow sm:rounded-lg sm:p-6">
+							<main className="px-4 py-5 sm:p-6">
 								{children}
 							</main>
 						</div>

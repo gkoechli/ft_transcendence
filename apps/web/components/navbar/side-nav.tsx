@@ -91,7 +91,7 @@ export function DashboardNav(props: { friendsNotifications: number, chatNotifica
 									<div className="ml-3 flex">
 										<Link href={`/profile`}>
 											<p className="text-sm font-medium">Tom cook</p>
-											<p className="text-xs font-medium dark:text-slate-400 dark:group-hover:text-gray-600 group-hover:text-gray-700">Edit profile</p>
+											<p className="text-xs font-medium dark:text-slate-400 dark:group-hover:text-gray-100 group-hover:text-gray-700">Edit profile</p>
 										</Link>
 									</div>
 								</div>
@@ -99,7 +99,7 @@ export function DashboardNav(props: { friendsNotifications: number, chatNotifica
 									<Link
 										href={`/api/logout`}
 										type="button"
-										className="font-medium rounded p-1 text-white hover:text-red-800">
+										className="font-medium rounded p-1 text-white hover:text-red-500">
 										<LogOut className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
 									</Link>
 								</div>

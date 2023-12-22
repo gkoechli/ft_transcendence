@@ -1,10 +1,16 @@
 {
+  "name": "ft_transcendence",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "backend": "npm run start --prefix backend",
-    "frontend": "npm run dev --prefix frontend",
-    "dev": "concurrently \"npm run backend\" \"npm run frontend\""
+    "dev": "pnpm run --parallel dev",
+    "build:server": "pnpm --filter server build",
+    "build:web": "pnpm --filter web build",
+    "start:server": "pnpm --filter server start:prod",
+    "start:web": "pnpm --filter web start"
   },
-  "dependencies": {
-    "concurrently": "^8.2.2"
-  }
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

@@ -20,7 +20,7 @@ export function DashboardNav(props: { friendsNotifications: number, chatNotifica
 					<div className="flex flex-1 flex-col overflow-y-auto pt-4 pb-4">
 						<div className=" h-14">
 							<Link href={`/dashboard`}>
-								<div className="flex flex-shrink-0 items-center px-4">
+								<div className="flex px-4">
 									<Image
 										src={"/logo/logo.png"}
 										width={32}

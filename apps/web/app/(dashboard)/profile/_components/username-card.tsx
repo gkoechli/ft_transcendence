@@ -11,8 +11,7 @@ import {
 	FormMessage,
 } from "@web/components/ui/form"
 import { Input } from "@web/components/ui/input"
-import Image from "next/image";
-import { Card } from "./card";
+import { Card } from "@web/components/card/card";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";

@@ -1,7 +1,7 @@
 import { Button } from "@web/components/ui/button";
 import Image from "next/image";
 import { UsernameCard } from "./_components/username-card";
-import { Card } from "./_components/card";
+import { Card } from "@web/components/card/card";
 import { FACard } from "./_components/2FA-card";
 
 export default function Home() {

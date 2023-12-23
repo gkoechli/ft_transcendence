@@ -14,9 +14,9 @@ export function DashboardNav(props: { friendsNotifications: number, chatNotifica
 		return null
 	}
 	return (
-		<div className="flex min-h-screen">
+		<div className="flex h-screen w-64">
 			<div className="flex w-64 flex-col">
-				<div className="flex min-h-0 flex-1 flex-col border-r border-gray-700">
+				<div className="flex min-h-0 flex-1 flex-col border-r border-gray-700 fixed h-screen w-64">
 					<div className="flex flex-1 flex-col overflow-y-auto pt-4 pb-4">
 						<div className=" h-14">
 							<Link href={`/dashboard`}>

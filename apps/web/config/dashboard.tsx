@@ -1,11 +1,16 @@
 import { DashboardConfig } from "@web/types/types";
-import { LayoutDashboard, MessagesSquare, Users } from "lucide-react";
+import { Gamepad2, LayoutDashboard, MessagesSquare, Users } from "lucide-react";
 
 export const dashboardConfig: DashboardConfig = [
 	{
 		title: "Dashboard",
 		href: "/dashboard",
 		icon: LayoutDashboard,
+	},
+	{
+		title: "Game",
+		href: "/game",
+		icon: Gamepad2,
 	},
 	{
 		title: "Friends",

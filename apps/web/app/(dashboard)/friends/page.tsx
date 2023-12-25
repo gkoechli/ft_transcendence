@@ -52,8 +52,13 @@ export default function Home() {
 			{friendRequests
 				&& (
 					<div>
-						<h4 className="text-xl font-bold">
+						<h4 className="text-xl font-bold flex items-center">
 							Friend Requests
+							<span
+								className="ml-3 inline-block rounded-full py-0.5 px-3 text-xs font-bold bg-blue-600 text-white"
+							>
+								10
+							</span>
 						</h4>
 						{friendRequests.map((friend, idx) => (
 							<FriendRequestCard key={friend.name + "_" + idx} name={friend.name} online={friend.online} status={friend.status} avatar={friend.pfp} />

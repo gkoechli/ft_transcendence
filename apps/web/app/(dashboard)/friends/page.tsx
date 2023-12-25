@@ -49,7 +49,7 @@ export default function Home() {
 
 	return (
 		<div className="-mt-4">
-			{friendRequests
+			{friendRequests  && friendRequests.length > 0
 				&& (
 					<div>
 						<h4 className="text-xl font-bold flex items-center">
@@ -71,11 +71,13 @@ export default function Home() {
 				<h4 className="text-xl font-bold">
 					Friends
 				</h4>
-				{friendList
+				{friendList && friendList.length > 0
 					? friendList.map((friend, idx) => (
 						<FriendCard key={friend.name + "_" + idx} name={friend.name} online={friend.online} status={friend.status} avatar={friend.pfp} />
 					))
-					: <p>no friends</p>}
+					: <div className="flex text-center justify-center">
+						<p>No friends</p>
+					</div> }
 			</div>
 
 		</div>

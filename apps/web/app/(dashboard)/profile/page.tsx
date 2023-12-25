@@ -7,7 +7,7 @@ import { FACard } from "./_components/2FA-card";
 export default function Home() {
 	return (
 		<>
-			<Card>
+			<Card className="my-0">
 				<div className="p-6">
 					<div className="flex float-right">
 						<button>
@@ -34,7 +34,7 @@ export default function Home() {
 
 			<FACard />
 
-			<Card>
+			<Card className="my-0">
 				<div className="p-6">
 					<h4 className="text-2xl font-semibold text-white">Preview</h4>
 					<p className="my-3 dark:text-gray-300">

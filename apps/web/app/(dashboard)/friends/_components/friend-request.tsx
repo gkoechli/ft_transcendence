@@ -3,7 +3,7 @@
 import { Card } from "@web/components/card/card";
 import { Badge } from "@web/components/ui/badge";
 import { Button } from "@web/components/ui/button";
-import { Eye, MoreHorizontal, Swords } from "lucide-react";
+import { Check, X } from "lucide-react";
 import Image from "next/image";
 import {
 	Tooltip,
@@ -11,14 +11,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@web/components/ui/tooltip"
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@web/components/ui/dropdown-menu"
-
-export function FriendCard({ name, avatar, online, status }: {
+export function FriendRequestCard({ name, avatar, online, status }: {
 	name: string;
 	avatar: string;
 	online: boolean;
@@ -58,12 +51,12 @@ export function FriendCard({ name, avatar, online, status }: {
 					<TooltipProvider>
 						<Tooltip>
 							<TooltipTrigger>
-								<Button size="sm" variant="ghost">
-									<Eye className="h-4 w-4" />
+								<Button size="sm" variant="ghost" className="hover:bg-green-500">
+									<Check className="h-4 w-4" />
 								</Button>
 							</TooltipTrigger>
 							<TooltipContent>
-								<p>View Game</p>
+								<p>Accept</p>
 							</TooltipContent>
 						</Tooltip>
 					</TooltipProvider>
@@ -71,38 +64,12 @@ export function FriendCard({ name, avatar, online, status }: {
 					<TooltipProvider>
 						<Tooltip>
 							<TooltipTrigger>
-								<Button size="sm" variant="ghost">
-									<Swords className="h-4 w-4" />
+								<Button size="sm" variant="ghost" className="hover:bg-red-500">
+									<X className="h-4 w-4" />
 								</Button>
 							</TooltipTrigger>
 							<TooltipContent>
-								<p>Start Game</p>
-							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
-
-					<TooltipProvider>
-						<Tooltip>
-							<TooltipTrigger>
-								<DropdownMenu>
-									<DropdownMenuTrigger asChild>
-										<Button variant="ghost" size="icon">
-											<MoreHorizontal className="h-4 w-4" />
-											<span className="sr-only">More</span>
-										</Button>
-									</DropdownMenuTrigger>
-									<DropdownMenuContent align="end">
-										<DropdownMenuItem>
-											Block friend
-										</DropdownMenuItem>
-										<DropdownMenuItem>
-											Remove friend
-										</DropdownMenuItem>
-									</DropdownMenuContent>
-								</DropdownMenu>
-							</TooltipTrigger>
-							<TooltipContent>
-								<p>More</p>
+								<p>Refuse</p>
 							</TooltipContent>
 						</Tooltip>
 					</TooltipProvider>

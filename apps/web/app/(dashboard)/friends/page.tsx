@@ -63,7 +63,7 @@ export default function Home() {
 						{friendRequests.map((friend, idx) => (
 							<FriendRequestCard key={friend.name + "_" + idx} name={friend.name} online={friend.online} status={friend.status} avatar={friend.pfp} />
 						))}
-						<Separator className="my-8 bg-white" />
+						<Separator className="my-8 max-w-5xl bg-white" />
 					</div>
 				)
 			}

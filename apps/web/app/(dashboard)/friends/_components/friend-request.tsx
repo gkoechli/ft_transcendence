@@ -11,6 +11,8 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@web/components/ui/tooltip"
+import Link from "next/link";
+
 export function FriendRequestCard({ name, avatar, online, status }: {
 	name: string;
 	avatar: string;
@@ -19,62 +21,64 @@ export function FriendRequestCard({ name, avatar, online, status }: {
 }) {
 	return (
 		<Card>
-			<div className="p-6 flex items-center w-full justify-between">
-				<div className="flex">
-					<div>
-						<Image
-							src={avatar}
-							width={48}
-							height={48}
-							className="rounded-full w-12 h-12"
-							alt="avatar"
-							loading="eager"
-						/>
-					</div>
-					<div className="ml-4">
-						<div className="items-center">
-							<p>
-								{name}
-							</p>
-							<Badge variant={`${online ? "default" : "destructive"}`}>
-								{online ? "Online" : "Offline"}
-							</Badge>
+			<Link href={`/u/${name}`}>
+				<div className="p-6 flex items-center w-full justify-between hover:bg-gray-800">
+					<div className="flex">
+						<div>
+							<Image
+								src={avatar}
+								width={48}
+								height={48}
+								className="rounded-full w-12 h-12"
+								alt="avatar"
+								loading="eager"
+							/>
+						</div>
+						<div className="ml-4">
+							<div className="items-center">
+								<p>
+									{name}
+								</p>
+								<Badge variant={`${online ? "default" : "destructive"}`}>
+									{online ? "Online" : "Offline"}
+								</Badge>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div>
-					<p className="text-sm text-gray-100">
-						{status}
-					</p>
-				</div>
-				<div className="flex float-right">
-					<TooltipProvider>
-						<Tooltip>
-							<TooltipTrigger>
-								<Button size="sm" variant="ghost" className="hover:bg-green-500">
-									<Check className="h-4 w-4" />
-								</Button>
-							</TooltipTrigger>
-							<TooltipContent>
-								<p>Accept</p>
-							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
+					<div>
+						<p className="text-sm text-gray-100">
+							{status}
+						</p>
+					</div>
+					<div className="flex float-right">
+						<TooltipProvider>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Button size="sm" variant="ghost" className="hover:bg-green-500">
+										<Check className="h-4 w-4" />
+									</Button>
+								</TooltipTrigger>
+								<TooltipContent>
+									<p>Accept</p>
+								</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
 
-					<TooltipProvider>
-						<Tooltip>
-							<TooltipTrigger>
-								<Button size="sm" variant="ghost" className="hover:bg-red-500">
-									<X className="h-4 w-4" />
-								</Button>
-							</TooltipTrigger>
-							<TooltipContent>
-								<p>Refuse</p>
-							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
+						<TooltipProvider>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Button size="sm" variant="ghost" className="hover:bg-red-500">
+										<X className="h-4 w-4" />
+									</Button>
+								</TooltipTrigger>
+								<TooltipContent>
+									<p>Refuse</p>
+								</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
+					</div>
 				</div>
-			</div>
+			</Link>
 		</Card>
 	)
 }

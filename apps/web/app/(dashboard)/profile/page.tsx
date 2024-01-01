@@ -3,8 +3,12 @@ import Image from "next/image";
 import { UsernameCard } from "./_components/username-card";
 import { Card } from "@web/components/card/card";
 import { FACard } from "./_components/2FA-card";
+import Link from "next/link";
 
 export default function Home() {
+	const user = {
+		id: "1",
+	}
 	return (
 		<>
 			<Card className="my-0">
@@ -44,9 +48,11 @@ export default function Home() {
 				<footer className="min-h-[57px] border-t-[1px] border-gray-700 py-3 px-6">
 					<div className="flex items-center">
 						<div className="m-auto mr-0">
-							<Button size="sm" className="h-8 font-medium" type="submit">
-								Preview
-							</Button>
+							<Link href={`/profile/${user.id}`}>
+								<Button size="sm" className="h-8 font-medium" type="submit">
+									Preview
+								</Button>
+							</Link>
 						</div>
 					</div>
 				</footer>

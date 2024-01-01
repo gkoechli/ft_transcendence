@@ -27,7 +27,7 @@ export function FriendCard({ name, avatar, online, inGame }: {
 }) {
 	return (
 		<Card>
-			<Link href={`/u/${name}`}>
+			<Link href={`/profile/${name}`}>
 				<div className="p-6 flex items-center w-full justify-between hover:bg-gray-800">
 					<div className="flex">
 						<div>

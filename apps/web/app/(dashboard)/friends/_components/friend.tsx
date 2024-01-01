@@ -3,7 +3,7 @@
 import { Card } from "@web/components/card/card";
 import { Badge } from "@web/components/ui/badge";
 import { Button } from "@web/components/ui/button";
-import { Eye, MoreHorizontal, Swords } from "lucide-react";
+import { Eye, MessageSquare, MoreHorizontal, Swords } from "lucide-react";
 import Image from "next/image";
 import {
 	Tooltip,
@@ -19,11 +19,11 @@ import {
 } from "@web/components/ui/dropdown-menu"
 import Link from "next/link";
 
-export function FriendCard({ name, avatar, online, status }: {
+export function FriendCard({ name, avatar, online, inGame }: {
 	name: string;
 	avatar: string;
 	online: boolean;
-	status: string;
+	inGame: boolean;
 }) {
 	return (
 		<Card>
@@ -53,32 +53,46 @@ export function FriendCard({ name, avatar, online, status }: {
 					</div>
 					<div>
 						<p className="text-sm text-gray-100">
-							{status}
+							{inGame ? "In Game" : "Not playing"}
 						</p>
 					</div>
 					<div className="flex float-right">
+						{inGame ?
+							<TooltipProvider>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button size="sm" variant="ghost" className="hover:bg-gray-700">
+											<Eye className="h-4 w-4" />
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent>
+										<p>View Game</p>
+									</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
+							:
+							<TooltipProvider>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button size="sm" variant="ghost" className="hover:bg-gray-700">
+											<Swords className="h-4 w-4" />
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent>
+										<p>Start Game</p>
+									</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
+						}
 						<TooltipProvider>
 							<Tooltip>
 								<TooltipTrigger asChild>
 									<Button size="sm" variant="ghost" className="hover:bg-gray-700">
-										<Eye className="h-4 w-4" />
+										<MessageSquare className="h-4 w-4" />
 									</Button>
 								</TooltipTrigger>
 								<TooltipContent>
-									<p>View Game</p>
-								</TooltipContent>
-							</Tooltip>
-						</TooltipProvider>
-
-						<TooltipProvider>
-							<Tooltip>
-								<TooltipTrigger asChild>
-									<Button size="sm" variant="ghost" className="hover:bg-gray-700">
-										<Swords className="h-4 w-4" />
-									</Button>
-								</TooltipTrigger>
-								<TooltipContent>
-									<p>Start Game</p>
+									<p>Open Chat</p>
 								</TooltipContent>
 							</Tooltip>
 						</TooltipProvider>

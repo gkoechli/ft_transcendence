@@ -14,4 +14,12 @@ export type SidebarNavItem = {
 	href?: string
 }
 
+export type PublicUser = {
+	id: string
+	name: string
+	online: boolean
+	inGame: boolean
+	pfp: string
+}
+
 export type DashboardConfig = SidebarNavItem[]

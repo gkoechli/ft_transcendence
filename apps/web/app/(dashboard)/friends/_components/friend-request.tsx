@@ -13,11 +13,11 @@ import {
 } from "@web/components/ui/tooltip"
 import Link from "next/link";
 
-export function FriendRequestCard({ name, avatar, online, status }: {
+export function FriendRequestCard({ name, avatar, online, inGame }: {
 	name: string;
 	avatar: string;
 	online: boolean;
-	status: string;
+	inGame: boolean;
 }) {
 	return (
 		<Card>
@@ -47,7 +47,7 @@ export function FriendRequestCard({ name, avatar, online, status }: {
 					</div>
 					<div>
 						<p className="text-sm text-gray-100">
-							{status}
+							{inGame ? "In Game" : "Not playing"}
 						</p>
 					</div>
 					<div className="flex float-right">

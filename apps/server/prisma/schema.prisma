@@ -33,11 +33,32 @@ model Message {
   chatId Int?
 }
 
+model muted {
+  id Int @id @default(autoincrement())
+
+  user User @relation(fields: [userId], references: [id])
+  chat Chat @relation(fields: [chatId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId Int
+  chatId Int
+}
+
 model Chat {
   id Int @id @default(autoincrement())
 
+  password String @default("")
+
   users    User[]
   messages Message[]
+
+  owner User @relation("owner", fields: [ownerId], references: [id])
+  ownerId Int
+  admins User[] @relation("admins")
+  banned User[] @relation("banned")
+  muted  muted[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -55,7 +76,12 @@ model User {
 
   // CHAT DATA
   chats     Chat[]
+  chatsOwned Chat[] @relation("owner")
+  banned    Chat[] @relation("banned")
+  admin     Chat[] @relation("admins")
+  muted     muted[]
   message   Message[]
+
 
   // GAME DATA
 

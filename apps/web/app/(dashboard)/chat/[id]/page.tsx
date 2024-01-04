@@ -1,9 +1,13 @@
 import { Button } from "@web/components/ui/button";
 import { AvatarImage, AvatarFallback, Avatar } from "@web/components/ui/avatar"
 import { Input } from "@web/components/ui/input"
-import { Gamepad2, Settings } from "lucide-react";
+import { Gamepad2, Settings, Swords } from "lucide-react";
 import { ScrollArea } from "@web/components/ui/scroll-area"
 import { cn } from "@web/utils/utils";
+import SettingsButtonAlertDialog from "./_components/settings-button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@web/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@web/components/ui/tooltip";
+import Link from "next/link";
 
 export default function Chat() {
 	const chat = {
@@ -20,6 +24,7 @@ export default function Chat() {
 			id: 1,
 			isFromUser: false,
 			username: "John Doe",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -27,6 +32,7 @@ export default function Chat() {
 			id: 2,
 			isFromUser: true,
 			username: "",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -34,6 +40,7 @@ export default function Chat() {
 			id: 1,
 			isFromUser: false,
 			username: "John Doe",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -41,6 +48,7 @@ export default function Chat() {
 			id: 2,
 			isFromUser: true,
 			username: "",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -48,6 +56,7 @@ export default function Chat() {
 			id: 1,
 			isFromUser: false,
 			username: "John Doe",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -55,6 +64,7 @@ export default function Chat() {
 			id: 2,
 			isFromUser: true,
 			username: "",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -62,6 +72,7 @@ export default function Chat() {
 			id: 1,
 			isFromUser: false,
 			username: "John Doe",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -69,6 +80,7 @@ export default function Chat() {
 			id: 2,
 			isFromUser: true,
 			username: "",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -76,6 +88,7 @@ export default function Chat() {
 			id: 1,
 			isFromUser: false,
 			username: "John Doe",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -83,6 +96,7 @@ export default function Chat() {
 			id: 2,
 			isFromUser: true,
 			username: "",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -90,6 +104,7 @@ export default function Chat() {
 			id: 1,
 			isFromUser: false,
 			username: "John Doe",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -97,6 +112,7 @@ export default function Chat() {
 			id: 2,
 			isFromUser: true,
 			username: "",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -104,6 +120,7 @@ export default function Chat() {
 			id: 1,
 			isFromUser: false,
 			username: "John Doe",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -111,6 +128,7 @@ export default function Chat() {
 			id: 2,
 			isFromUser: true,
 			username: "",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -118,6 +136,7 @@ export default function Chat() {
 			id: 1,
 			isFromUser: false,
 			username: "John Doe",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -125,6 +144,7 @@ export default function Chat() {
 			id: 2,
 			isFromUser: true,
 			username: "",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -132,6 +152,7 @@ export default function Chat() {
 			id: 1,
 			isFromUser: false,
 			username: "John Doe",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -139,6 +160,7 @@ export default function Chat() {
 			id: 2,
 			isFromUser: true,
 			username: "",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -146,6 +168,7 @@ export default function Chat() {
 			id: 1,
 			isFromUser: false,
 			username: "John Doe",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -153,6 +176,7 @@ export default function Chat() {
 			id: 2,
 			isFromUser: true,
 			username: "",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -160,6 +184,7 @@ export default function Chat() {
 			id: 1,
 			isFromUser: false,
 			username: "John Doe",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -167,6 +192,7 @@ export default function Chat() {
 			id: 2,
 			isFromUser: true,
 			username: "",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -174,6 +200,7 @@ export default function Chat() {
 			id: 1,
 			isFromUser: false,
 			username: "John Doe",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -181,6 +208,7 @@ export default function Chat() {
 			id: 2,
 			isFromUser: true,
 			username: "",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -188,6 +216,7 @@ export default function Chat() {
 			id: 1,
 			isFromUser: false,
 			username: "John Doe",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -195,6 +224,7 @@ export default function Chat() {
 			id: 2,
 			isFromUser: true,
 			username: "",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -202,6 +232,7 @@ export default function Chat() {
 			id: 1,
 			isFromUser: false,
 			username: "John Doe",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -209,6 +240,7 @@ export default function Chat() {
 			id: 2,
 			isFromUser: true,
 			username: "",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -216,6 +248,7 @@ export default function Chat() {
 			id: 1,
 			isFromUser: false,
 			username: "John Doe",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -223,6 +256,7 @@ export default function Chat() {
 			id: 2,
 			isFromUser: true,
 			username: "",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -230,6 +264,7 @@ export default function Chat() {
 			id: 1,
 			isFromUser: false,
 			username: "John Doe",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -237,6 +272,7 @@ export default function Chat() {
 			id: 2,
 			isFromUser: true,
 			username: "",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -244,6 +280,7 @@ export default function Chat() {
 			id: 1,
 			isFromUser: false,
 			username: "John Doe",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
@@ -251,13 +288,14 @@ export default function Chat() {
 			id: 2,
 			isFromUser: true,
 			username: "",
+			userId: 1,
 			avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 			content: "Hello, how are you?",
 		},
 	]
 
 	return (
-		<div className="flex">
+		<div className="flex h-screen max-h-full">
 			<section className="flex flex-col w-full">
 				<header className="absolute top-0 p-[6px]">
 					<div className="flex">
@@ -290,14 +328,12 @@ export default function Chat() {
 								<span className="text-xs text-muted-foreground block">{chat.type}</span>
 							</div>
 						</h2>
-						<Button size="sm" variant="ghost" className="hover:bg-gray-700">
-							<Settings className="h-6 w-6" />
-						</Button>
+						<SettingsButtonAlertDialog />
 					</div>
 				</header>
-				<main className="flex-1 overflow-auto">
-					<ScrollArea className="space-y-4 h-[75vh]">
-						{messages.map((message) => {
+				<div className="flex-1 overflow-hidden max-h-screen">
+					<ScrollArea className="pt-2 border-t dark:border-zinc-700 rounded h-96">
+						{messages.map((message, index) => {
 							if (message.isFromUser)
 								return (
 									<div className="flex items-end gap-2 justify-end" key={`${message.id}+${message.username}`}>
@@ -307,30 +343,62 @@ export default function Chat() {
 									</div>
 								)
 							return (
-								<div className="flex items-end gap-2" key={`${message.id}+${message.username}`}>
-									<Avatar className="relative overflow-visible w-10 h-10">
-										<AvatarImage alt="User Avatar" src={message.avatar} className="rounded-full" />
-										<AvatarFallback>{message.username[0].toLocaleUpperCase()}</AvatarFallback>
-									</Avatar>
-									<div className="rounded-lg bg-zinc-200 dark:bg-zinc-700 p-2">
-										<p className="text-sm">{message.content}</p>
-									</div>
-								</div>
+
+								<DropdownMenu key={message.avatar + index}>
+									<DropdownMenuTrigger className="hover:opacity-70">
+										<div className="flex items-end gap-2">
+											<Avatar className="relative overflow-visible w-10 h-10">
+												<AvatarImage alt="User Avatar" src={message.avatar} className="rounded-full" />
+												<AvatarFallback>{message.username[0].toLocaleUpperCase()}</AvatarFallback>
+											</Avatar>
+											<div className="rounded-lg bg-zinc-200 dark:bg-zinc-700 p-2">
+												<p className="font-extrabold text-left">{message.username}</p>
+												<p className="text-sm">{message.content}</p>
+											</div>
+										</div>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent align="end">
+										<Link href={`/profile/${message.userId}`}>
+											<DropdownMenuItem>
+												View Profile
+											</DropdownMenuItem>
+										</Link>
+										<DropdownMenuItem>
+											Block
+										</DropdownMenuItem>
+										<DropdownMenuItem>
+											Mute 10min
+										</DropdownMenuItem>
+										<DropdownMenuItem>
+											Kick
+										</DropdownMenuItem>
+										<DropdownMenuItem>
+											Ban
+										</DropdownMenuItem>
+									</DropdownMenuContent>
+								</DropdownMenu>
 							)
 						})}
 					</ScrollArea>
-				</main>
-				<footer className="w-full">
 					<div className="bottom-0 p-4 border-t dark:border-zinc-700">
 						<div className="flex items-center gap-2">
-							<Button size="icon" variant="ghost">
-								<Gamepad2 className="w-6 h-6" />
-							</Button>
+							<TooltipProvider>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button size="sm" variant="ghost" className="hover:bg-gray-700">
+											<Gamepad2 className="w-6 h-6" />
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent>
+										<p>Start Game</p>
+									</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
 							<Input className="flex-1" placeholder="Type a message..." />
 							<Button>Send</Button>
 						</div>
 					</div>
-				</footer>
+				</div>
 			</section>
 		</div>
 	);

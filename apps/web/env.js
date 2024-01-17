@@ -17,6 +17,7 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_NESTJS_SERVER: z.string().url(),
+    NEXT_PUBLIC_OAUTH_URL: z.string().url(),
   },
 
   /**
@@ -25,6 +26,7 @@ export const env = createEnv({
    */
   runtimeEnv: {
     NEXT_PUBLIC_NESTJS_SERVER: process.env.NEXT_PUBLIC_NESTJS_SERVER,
+    NEXT_PUBLIC_OAUTH_URL: process.env.NEXT_PUBLIC_OAUTH_URL,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

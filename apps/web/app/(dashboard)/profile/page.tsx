@@ -1,42 +1,24 @@
+'use client'
 import { Button } from "@web/components/ui/button";
-import Image from "next/image";
 import { UsernameCard } from "./_components/username-card";
 import { Card } from "@web/components/card/card";
 import { FACard } from "./_components/2FA-card";
 import Link from "next/link";
+import { PFPCard } from "./_components/pfp-card";
+import { swrFetcher } from "@web/utils/fetcher";
+import useSWR from "swr";
+import { User } from "@web/types/types";
 
 export default function Home() {
-	const user = {
-		id: "1",
-	}
+	const { data: user, error, isLoading, mutate } = useSWR('/user/me', swrFetcher)
+	if (isLoading) return <div>Loading...</div>
+	if (error || !user.id) return <div>Error</div>
+
 	return (
 		<>
-			<Card className="my-0">
-				<div className="p-6">
-					<div className="flex float-right">
-						<button>
-							<Image
-								src={"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"}
-								width={80}
-								height={80}
-								className="rounded-full hover:opacity-90"
-								alt="avatar"
-								loading="eager"
-							/>
-						</button>
-					</div>
-					<h4 className="text-2xl font-semibold text-white">Avatar</h4>
-					<p className="my-3 dark:text-gray-300">
-						This is your avatar.
-						<br />
-						Click on the avatar to upload a custom one from your files.
-					</p>
-				</div>
-			</Card>
-
-			<UsernameCard />
-
-			<FACard />
+			<PFPCard user={user as User} mutate={mutate} />
+			<UsernameCard user={user as User} mutate={mutate} />
+			<FACard user={user as User} mutate={mutate} />
 
 			<Card className="my-0">
 				<div className="p-6">

@@ -1,0 +1,225 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { AuthService } from '@server/auth/auth.service';
+import { PrismaService } from '@server/prisma/prisma.service';
+import { Request, Response } from 'express';
+import { z } from 'zod';
+import { sendEmail } from '@server/utils/mail/util/send';
+import * as crypto from 'crypto';
+
+@Controller('user')
+export class UserController {
+  constructor(
+    private prisma: PrismaService,
+    private authService: AuthService,
+  ) {}
+
+  @Get('/me')
+  async me(@Req() req: Request, @Res() res: Response) {
+    if (!(await this.authService.isLoggedIn(req))) {
+      return res.status(401).json({ error: 'forbidden' });
+    }
+
+    return res.status(200).send(await this.authService.getLoggedInUser(req));
+  }
+
+  @Post('/username')
+  async username(@Req() req: Request, @Res() res: Response) {
+    if (!(await this.authService.isLoggedIn(req))) {
+      return res.status(401).json({ error: 'forbidden' });
+    }
+
+    const schema = z.object({
+      username: z
+        .string()
+        .min(1)
+        .max(48)
+        .regex(/^[a-zA-Z0-9_]+$/),
+    });
+    if (!schema.safeParse(req.body).success) {
+      return res.status(400).send({ error: 'No/Invalid username provided' });
+    }
+    const { username } = schema.parse(req.body);
+
+    const user = await this.authService.getLoggedInUser(req);
+    if (!user) {
+      return res.status(400).send({ error: 'No user found' });
+    }
+
+    const updatedUser = await this.prisma.user.update({
+      where: { id: user.id },
+      data: { username: username },
+    });
+
+    return res.status(200).send(updatedUser);
+  }
+
+  @Post('2fa')
+  async tfa(@Req() req: Request, @Res() res: Response) {
+    if (!(await this.authService.isLoggedIn(req))) {
+      return res.status(401).json({ error: 'forbidden' });
+    }
+
+    const schema = z.object({
+      email: z.string().email(),
+      tfaEnabled: z.boolean(),
+    });
+    if (!schema.safeParse(req.body).success) {
+      return res
+        .status(400)
+        .send({ error: 'Invalid body, missing either email or tfaEnabled' });
+    }
+    const { tfaEnabled, email } = schema.parse(req.body);
+
+    const user = await this.authService.getLoggedInUser(req);
+    if (!user) {
+      return res.status(400).send({ error: 'No user found' });
+    }
+
+    // if tfa is disabled and user doesn't want to enable it
+    if (!user.tfaEnabled && !user.tfaVerified && !tfaEnabled) {
+      const newUser = await this.prisma.user.update({
+        where: { id: user.id },
+        data: { email: email, tfaEnabled: false, tfaVerified: false },
+      });
+      return res.status(200).send(newUser);
+    }
+
+    // VERIFY 2FA STUFF
+    const OTPToken = crypto
+      .randomInt(99999999)
+      .toString()
+      .padStart('99999999'.length, '0');
+    // TODO: send otp to email
+    try {
+      const status = await sendEmail({
+        to: email,
+        templateId: 'newUser',
+        context: {
+          token: OTPToken,
+        },
+      });
+      if (!status) {
+        return res.status(500).json({
+          success: false,
+          error: 'Failed to send email',
+        });
+      }
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to send email',
+      });
+    }
+    // TODO: store OTP in db
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        tfaOTP: OTPToken,
+        tfaOTPCreatedAt: new Date(),
+      },
+    });
+    // send OTP step to client
+    return res.status(200).json({
+      success: true,
+      otp: true,
+      email: user.email,
+    });
+  }
+
+  @Post('pfp')
+  @UseInterceptors(FileInterceptor('file'))
+  async pfp(
+    @Req() req: Request,
+    @Res() res: Response,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!(await this.authService.isLoggedIn(req))) {
+      return res.status(401).json({ error: 'forbidden' });
+    }
+
+    if (
+      !file ||
+      !file.buffer ||
+      (file.mimetype !== 'image/png' && file.mimetype !== 'image/jpeg')
+    ) {
+      return res.status(400).json({ error: 'No/Invalid file provided' });
+    }
+
+    if (file.size > 1024 * 1024 * 5) {
+      return res.status(400).json({ error: 'File too large, over 5MB' });
+    }
+
+    const user = await this.authService.getLoggedInUser(req);
+    if (!user) {
+      return res.status(400).send({ error: 'No user found' });
+    }
+
+    const updatedUser = await this.prisma.user.update({
+      where: { id: user.id },
+      data: { pfp: 'data:image/png;base64,' + file.buffer.toString('base64') },
+    });
+
+    res.status(200).send(updatedUser);
+  }
+
+  @Get(':id')
+  async getUser(@Req() req: Request, @Res() res: Response) {
+    if (!(await this.authService.isLoggedIn(req))) {
+      return res.status(401).json({ error: 'forbidden' });
+    }
+
+    const reqUser = await this.authService.getLoggedInUser(req);
+    if (!reqUser) {
+      return res.status(400).send({ error: 'No user found' });
+    }
+
+    const schema = z.object({
+      id: z.coerce.number().min(0),
+    });
+    if (!schema.safeParse(req.params).success) {
+      return res.status(400).send({ error: 'No/Invalid id provided' });
+    }
+    const { id } = schema.parse(req.params);
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: id },
+      select: {
+        id: true,
+        username: true,
+        pfp: true,
+        status: true,
+        inGame: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).send({ error: 'No user found' });
+    }
+
+    const data: any = user;
+    data.status = false;
+    data.isOwnProfile = false; //reqUser.id === user.id;
+    data.isFriend = true; // TODO: IMPLEMENT FRIENDS
+    data.isBlocked = false; // TODO: IMPLEMENT BLOCKS
+    data.ranking = 2;
+    data.totalGamesPlayed = 299;
+    data.ratioWL = 100;
+
+    if (!user) {
+      return res.status(404).send({ error: 'No user found' });
+    }
+
+    return res.status(200).send(user);
+  }
+}

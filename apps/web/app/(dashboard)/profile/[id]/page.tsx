@@ -19,6 +19,8 @@ import {
 import { Eye, Swords, MoreHorizontal, Trophy, Gamepad2, Crown, UserPlus } from "lucide-react";
 import GameHistory from "./_components/game-history";
 import Link from "next/link";
+import useSWR from "swr";
+import { swrFetcher } from "@web/utils/fetcher";
 
 interface Tracker {
 	color: Color;
@@ -26,18 +28,9 @@ interface Tracker {
 }
 
 export default function UserPage({ params }: { params: { id: string } }) {
-	const user = {
-		id: "1",
-		name: "John Doe",
-		online: true,
-		inGame: false,
-		pfp: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-		isFriend: false,
-		isOwnProfile: false,
-		ranking: 2,
-		totalGamesPlayed: 299,
-		ratioWL: 2.99,
-	}
+	const { data: user, error, isLoading, mutate } = useSWR(`/user/${params.id}`, swrFetcher)
+	if (isLoading) return <div>Loading...</div>
+	if (error || !user.id) return <div>Error, user does not exists</div>
 
 	return (
 		<>
@@ -53,8 +46,8 @@ export default function UserPage({ params }: { params: { id: string } }) {
 					/>
 				</div>
 				<div className="flex items-center justify-center">
-					{user && user.online ? <span className="w-3 h-3 bg-green-500 rounded-full mr-1" /> : <span className="w-3 h-3 bg-gray-500 rounded-full mr-1" />}
-					<h4 className="text-2xl font-semibold text-white">{user.name}</h4>
+					{user && user.status ? <span className="w-3 h-3 bg-green-500 rounded-full mr-1" /> : <span className="w-3 h-3 bg-gray-500 rounded-full mr-1" />}
+					<h4 className="text-2xl font-semibold text-white">{user.username}</h4>
 				</div>
 				<div>
 					<p className="text-sm font-medium text-center text-gray-300">{user && user.inGame ? "In Game" : "Not playing"}</p>
@@ -120,9 +113,15 @@ export default function UserPage({ params }: { params: { id: string } }) {
 									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent align="end">
-									<DropdownMenuItem>
-										Block friend
-									</DropdownMenuItem>
+									{user && user.isBlocked
+										?
+										<DropdownMenuItem>
+											Unblock user
+										</DropdownMenuItem>
+										:
+										<DropdownMenuItem>
+											Block user
+										</DropdownMenuItem>}
 									{user && user.isFriend &&
 										<DropdownMenuItem>
 											Remove friend

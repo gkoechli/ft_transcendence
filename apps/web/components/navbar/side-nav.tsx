@@ -6,9 +6,22 @@ import Image from 'next/image';
 import Link from "next/link";
 import { usePathname } from "next/navigation"
 import { LogOut } from "lucide-react";
+import { Button } from "../ui/button";
+import { useEffect } from "react";
+import useSWR from "swr";
+import { swrFetcher } from "@web/utils/fetcher";
 
 export function DashboardNav(props: { friendsNotifications: number, chatNotifications: number }) {
 	const path = usePathname()
+
+	const { data: user, error, isLoading } = useSWR('/user/me', swrFetcher, { refreshInterval: 500 })
+
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+		if (!token) {
+			window.location.href = '/'
+		}
+	})
 
 	if (!dashboardConfig?.length) {
 		return null
@@ -60,7 +73,7 @@ export function DashboardNav(props: { friendsNotifications: number, chatNotifica
 												"flex-1",
 												path === item.href ? 'text-white font-bold' : 'text-gray-400 group-hover:text-gray-100'
 											)}>{item.title}</span>
-											{(props.friendsNotifications > 0 && item.href === "/friends") || ( props.chatNotifications > 0 && item.href === "/chat") ? (
+											{(props.friendsNotifications > 0 && item.href === "/friends") || (props.chatNotifications > 0 && item.href === "/chat") ? (
 												<span
 													className="ml-3 inline-block rounded-full py-0.5 px-3 text-xs font-bold bg-blue-600 text-white"
 												>
@@ -82,26 +95,31 @@ export function DashboardNav(props: { friendsNotifications: number, chatNotifica
 									<div>
 										<Image
 											className="inline-block h-10 w-10 rounded-full"
-											src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-											alt=""
+											src={user?.pfp}
+											alt="loading..."
 											width={40}
 											height={40}
 										/>
 									</div>
 									<div className="ml-3 flex">
 										<Link href={`/profile`}>
-											<p className="text-sm font-medium">Tom cook</p>
+											<p className="text-sm font-medium">{isLoading || error ? "loading..." : user?.username}</p>
 											<p className="text-xs font-medium dark:text-slate-400 dark:group-hover:text-gray-100 group-hover:text-gray-700">Edit profile</p>
 										</Link>
 									</div>
 								</div>
 								<div className="ml-2 flex shrink-0">
-									<Link
-										href={`/api/logout`}
+									<Button
+										variant="ghost"
 										type="button"
-										className="font-medium rounded p-1 text-white hover:text-red-500">
+										className="font-medium rounded p-1 text-white hover:text-red-500 bg-transparent hover:bg-transparent"
+										onClick={() => {
+											localStorage.removeItem("token");
+											window.location.href = "/"
+										}}
+									>
 										<LogOut className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
-									</Link>
+									</Button>
 								</div>
 							</div>
 						</div>

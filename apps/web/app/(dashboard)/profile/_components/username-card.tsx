@@ -4,10 +4,8 @@ import { Button } from "@web/components/ui/button";
 import {
 	Form,
 	FormControl,
-	FormDescription,
 	FormField,
 	FormItem,
-	FormLabel,
 	FormMessage,
 } from "@web/components/ui/form"
 import { Input } from "@web/components/ui/input"
@@ -15,8 +13,12 @@ import { Card } from "@web/components/card/card";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
+import { fetcher } from "@web/utils/fetcher";
+import { toast } from "sonner";
+import { KeyedMutator } from "swr";
+import { User } from "@web/types/types";
 
-export function UsernameCard() {
+export function UsernameCard({ user, mutate }: { user: User; mutate: KeyedMutator<any> }) {
 	const formSchema = z.object({
 		username: z.string().min(1, {
 			message: "Username must be at least 1 characters.",
@@ -31,15 +33,26 @@ export function UsernameCard() {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			username: "",
+			username: user.username,
 		},
 	})
 
 	// 2. Define a submit handler.
-	function onSubmit(values: z.infer<typeof formSchema>) {
+	async function onSubmit(values: z.infer<typeof formSchema>) {
 		// Do something with the form values.
 		// ✅ This will be type-safe and validated.
-		console.log(values)
+		const data = await fetcher("/user/username", "POST", {
+			username: values.username,
+		});
+		if (data.status != 200) {
+			form.setError("username", {
+				message: data.json.error,
+			})
+			return;
+		} else {
+			toast.success("Username updated.");
+			mutate();
+		}
 	}
 
 	return (
@@ -57,7 +70,7 @@ export function UsernameCard() {
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<Input placeholder="example" {...field} autoComplete="off" className="max-w-md border-gray-700 bg-gray-900"/>
+										<Input placeholder={user.username || "example"} {...field} autoComplete="off" className="max-w-md border-gray-700 bg-gray-900" />
 									</FormControl>
 									<FormMessage />
 								</FormItem>

@@ -46,19 +46,26 @@ model muted {
   chatId Int
 }
 
+enum ChatType {
+  public
+  private
+  protected
+}
+
 model Chat {
   id Int @id @default(autoincrement())
 
-  password String @default("")
+  type     ChatType @default(public)
+  password String   @default("")
 
   users    User[]
   messages Message[]
 
-  owner User @relation("owner", fields: [ownerId], references: [id])
+  owner   User    @relation("owner", fields: [ownerId], references: [id])
   ownerId Int
-  admins User[] @relation("admins")
-  banned User[] @relation("banned")
-  muted  muted[]
+  admins  User[]  @relation("admins")
+  banned  User[]  @relation("banned")
+  muted   muted[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -67,27 +74,30 @@ model Chat {
 model User {
   id Int @id @default(autoincrement())
 
+  id42     Int     @unique
   email    String  @unique
   username String
-  pfp      String  @default("http://localhost:8000/uploads/default.png")
+  pfp      String  @default("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII")
   status   Boolean @default(true)
 
-  tfaEnabled Boolean @default(false)
+  tfaEnabled      Boolean   @default(false)
+  tfaVerified     Boolean   @default(false)
+  tfaOTP          String    @default("")
+  tfaOTPCreatedAt DateTime?
 
   // CHAT DATA
-  chats     Chat[]
-  chatsOwned Chat[] @relation("owner")
-  banned    Chat[] @relation("banned")
-  admin     Chat[] @relation("admins")
-  muted     muted[]
-  message   Message[]
-
+  chats      Chat[]
+  chatsOwned Chat[]    @relation("owner")
+  banned     Chat[]    @relation("banned")
+  admin      Chat[]    @relation("admins")
+  muted      muted[]
+  message    Message[]
 
   // GAME DATA
 
   inGame      Boolean @default(false)
   gamesPlayed Game[]
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

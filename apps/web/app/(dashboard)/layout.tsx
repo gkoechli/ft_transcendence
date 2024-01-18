@@ -10,7 +10,7 @@ export default async function RootLayout({
 		<div className="scroll-smooth antialiased">
 			<div className="min-h-[100vh] sm:min-h-screen w-screen flex flex-col relative bg-gray-950 font-inter overflow-hidden">
 				<div className="flex z-[1]">
-					<DashboardNav friendsNotifications={2} chatNotifications={3} />
+					<DashboardNav />
 					<div className="w-screen">
 						<TopNav />
 						<div className="mx-auto max-w-7xl sm:px-6 lg:px-8 py-8">

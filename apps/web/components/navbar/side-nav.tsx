@@ -11,7 +11,7 @@ import { useEffect } from "react";
 import useSWR from "swr";
 import { swrFetcher } from "@web/utils/fetcher";
 
-export function DashboardNav(props: { friendsNotifications: number, chatNotifications: number }) {
+export function DashboardNav() {
 	const path = usePathname()
 
 	const { data: user, error, isLoading } = useSWR('/user/me', swrFetcher, { refreshInterval: 500 })
@@ -73,12 +73,12 @@ export function DashboardNav(props: { friendsNotifications: number, chatNotifica
 												"flex-1",
 												path === item.href ? 'text-white font-bold' : 'text-gray-400 group-hover:text-gray-100'
 											)}>{item.title}</span>
-											{(props.friendsNotifications > 0 && item.href === "/friends") || (props.chatNotifications > 0 && item.href === "/chat") ? (
+											{!isLoading && user && user.notifications && ((user.notifications.friendRequests > 0 && item.href.includes("/friends")) || (user.notifications.chats > 0 && item.href.includes("/chat"))) ? (
 												<span
 													className="ml-3 inline-block rounded-full py-0.5 px-3 text-xs font-bold bg-blue-600 text-white"
 												>
 													{
-														item.href === "/friends" ? props.friendsNotifications : item.href === "/chat" ? props.chatNotifications : null
+														item.href === "/friends" ? user.notifications.friendRequests : item.href === "/chat" ? user.notifications.chats : null
 													}
 												</span>
 											) : null}

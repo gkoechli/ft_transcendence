@@ -71,6 +71,29 @@ model Chat {
   updatedAt DateTime @updatedAt
 }
 
+model Friend {
+  user     User @relation("usersFriend", fields: [userId], references: [id])
+  userId   Int
+  friend   User @relation("friendsOfUsers", fields: [friendId], references: [id])
+  friendId Int
+
+  accepted Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@id([userId, friendId])
+}
+
+model Blocked {
+  user_id        Int
+  user           User @relation("blocked", fields: [user_id], references: [id])
+  blockedUser_id Int
+
+  createdAt DateTime @default(now())
+
+  @@unique([user_id, blockedUser_id])
+}
+
 model User {
   id Int @id @default(autoincrement())
 
@@ -85,6 +108,11 @@ model User {
   tfaOTP          String    @default("")
   tfaOTPCreatedAt DateTime?
 
+  // FRIEND DATA
+  friends  Friend[]  @relation("usersFriend")
+  friendOf Friend[]  @relation("friendsOfUsers")
+  blocked  Blocked[] @relation("blocked")
+
   // CHAT DATA
   chats      Chat[]
   chatsOwned Chat[]    @relation("owner")
@@ -94,7 +122,6 @@ model User {
   message    Message[]
 
   // GAME DATA
-
   inGame      Boolean @default(false)
   gamesPlayed Game[]
 

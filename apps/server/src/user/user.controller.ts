@@ -15,12 +15,14 @@ import { z } from 'zod';
 import { sendEmail } from '@server/utils/mail/util/send';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
+import { FriendService } from '@server/friend/friend.service';
 
 @Controller('user')
 export class UserController {
   constructor(
     private prisma: PrismaService,
     private authService: AuthService,
+    private friendService: FriendService,
   ) {}
 
   @Get('/me')
@@ -29,7 +31,19 @@ export class UserController {
       return res.status(401).json({ error: 'forbidden' });
     }
 
-    return res.status(200).send(await this.authService.getLoggedInUser(req));
+    const user = await this.authService.getLoggedInUser(req);
+    if (!user) {
+      return res.status(400).send({ error: 'No user found' });
+    }
+
+    return res.status(200).json({
+      ...user,
+      notifications: {
+        chats: 0, // TODO: IMPLEMENT CHATS
+        friendRequests: (await this.friendService.getAllFriendsTypes(user.id))
+          .pending.length,
+      },
+    });
   }
 
   @Post('/username')
@@ -211,7 +225,7 @@ export class UserController {
 
     const data: any = user;
     data.status = false;
-    data.isOwnProfile = false; //reqUser.id === user.id;
+    data.isOwnProfile = reqUser.id === user.id;
     data.isFriend = true; // TODO: IMPLEMENT FRIENDS
     data.isBlocked = false; // TODO: IMPLEMENT BLOCKS
     data.ranking = 2;

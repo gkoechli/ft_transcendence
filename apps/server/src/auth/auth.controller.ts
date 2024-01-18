@@ -8,6 +8,7 @@ import { AuthService } from './auth.service';
 import { verify } from 'jsonwebtoken';
 import { sendEmail } from '@server/utils/mail/util/send';
 import * as crypto from 'crypto';
+import * as bcrypt from 'bcrypt';
 
 @Controller('auth')
 export class AuthController {
@@ -75,7 +76,16 @@ export class AuthController {
         .randomInt(99999999)
         .toString()
         .padStart('99999999'.length, '0');
-      // TODO: send otp to email
+      // store OTP in db
+      const hash = await bcrypt.hash(OTPToken, 10);
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          tfaOTP: hash,
+          tfaOTPCreatedAt: new Date(),
+        },
+      });
+      // send otp to email
       try {
         const status = await sendEmail({
           to: user.email,
@@ -96,14 +106,6 @@ export class AuthController {
           error: 'Failed to send email',
         });
       }
-      // TODO: store OTP in db
-      await this.prisma.user.update({
-        where: { id: user.id },
-        data: {
-          tfaOTP: OTPToken,
-          tfaOTPCreatedAt: new Date(),
-        },
-      });
       // send OTP step to client
       return res.status(200).json({
         success: true,
@@ -132,20 +134,21 @@ export class AuthController {
       tfaEnabled: z.boolean().optional(),
       step: z.enum(['login', 'verification']),
     });
-    console.log(schema.safeParse(req.body));
     if (!schema.safeParse(req.body).success) {
       return res.status(400).json({ success: false, error: 'Invalid' });
     }
-
     const { email, otp, step, newEmail, tfaEnabled } = schema.parse(req.body);
 
     let user = await this.prisma.user.findUnique({
-      where: { email: email, tfaOTP: otp },
+      where: { email: email },
     });
     if (
       !user ||
       (step === 'verification' && (!newEmail || tfaEnabled === undefined))
     ) {
+      return res.status(400).json({ success: false, error: 'Invalid' });
+    }
+    if (!(await bcrypt.compare(otp, user.tfaOTP))) {
       return res.status(400).json({ success: false, error: 'Invalid' });
     }
 

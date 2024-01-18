@@ -14,6 +14,7 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 import { sendEmail } from '@server/utils/mail/util/send';
 import * as crypto from 'crypto';
+import * as bcrypt from 'bcrypt';
 
 @Controller('user')
 export class UserController {
@@ -98,10 +99,19 @@ export class UserController {
       .randomInt(99999999)
       .toString()
       .padStart('99999999'.length, '0');
-    // TODO: send otp to email
+    // store OTP in db
+    const hash = await bcrypt.hash(OTPToken, 10);
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        tfaOTP: hash,
+        tfaOTPCreatedAt: new Date(),
+      },
+    });
+    // send otp to email
     try {
       const status = await sendEmail({
-        to: email,
+        to: user.email,
         templateId: 'newUser',
         context: {
           token: OTPToken,
@@ -119,14 +129,6 @@ export class UserController {
         error: 'Failed to send email',
       });
     }
-    // TODO: store OTP in db
-    await this.prisma.user.update({
-      where: { id: user.id },
-      data: {
-        tfaOTP: OTPToken,
-        tfaOTPCreatedAt: new Date(),
-      },
-    });
     // send OTP step to client
     return res.status(200).json({
       success: true,

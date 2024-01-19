@@ -227,8 +227,8 @@ export class FriendController {
       }
       const newFriend = await this.prisma.friend.create({
         data: {
-          userId: user.id,
-          friendId: id,
+          userId: existingFriend.userId,
+          friendId: existingFriend.friendId,
           accepted: true,
         },
       });
@@ -241,5 +241,121 @@ export class FriendController {
         .send({ error: 'A friend request is already pending' });
     }
     return res.status(200).json({ success: true, msg: 'Friend accepted!' });
+  }
+
+  @Post('/refuse')
+  async declineFriend(@Req() req: Request, @Res() res: Response) {
+    if (!(await this.authService.isLoggedIn(req))) {
+      return res.status(401).json({ error: 'forbidden' });
+    }
+
+    const user = await this.authService.getLoggedInUser(req);
+    if (!user) {
+      return res.status(400).send({ error: 'No user found' });
+    }
+
+    const schema = z.object({
+      id: z.number().min(0),
+    });
+    if (!schema.safeParse(req.body).success) {
+      return res.status(400).send({ error: 'No/Invalid id provided' });
+    }
+    const { id } = schema.parse(req.body);
+
+    if (id === user.id) {
+      return res.status(400).send({ error: 'Cannot refuse yourself' });
+    }
+
+    const friend = await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!friend) {
+      return res.status(400).send({ error: 'No user found' });
+    }
+
+    const existingFriend = await this.prisma.friend.findFirst({
+      where: {
+        OR: [
+          { userId: user.id, friendId: id, accepted: false },
+          { userId: id, friendId: user.id, accepted: false },
+        ],
+      },
+    });
+    if (!existingFriend) {
+      return res.status(400).send({ error: 'No friend request found' });
+    }
+    const updatedFriend = await this.prisma.friend.deleteMany({
+      where: {
+        OR: [
+          { userId: user.id, friendId: id },
+          { userId: id, friendId: user.id },
+        ],
+      },
+    });
+    if (!updatedFriend) {
+      return res.status(400).send({ error: 'Failed to refuse friend' });
+    }
+    return res
+      .status(200)
+      .json({ success: true, msg: 'Friend request refused!' });
+  }
+
+  @Post('/remove')
+  async removeFriend(@Req() req: Request, @Res() res: Response) {
+    if (!(await this.authService.isLoggedIn(req))) {
+      return res.status(401).json({ error: 'forbidden' });
+    }
+
+    const user = await this.authService.getLoggedInUser(req);
+    if (!user) {
+      return res.status(400).send({ error: 'No user found' });
+    }
+
+    const schema = z.object({
+      id: z.number().min(0),
+    });
+    if (!schema.safeParse(req.body).success) {
+      return res.status(400).send({ error: 'No/Invalid id provided' });
+    }
+    const { id } = schema.parse(req.body);
+
+    if (id === user.id) {
+      return res.status(400).send({ error: 'Cannot remove yourself' });
+    }
+
+    const friend = await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!friend) {
+      return res.status(400).send({ error: 'No user found' });
+    }
+
+    const existingFriend = await this.prisma.friend.findFirst({
+      where: {
+        OR: [
+          { userId: user.id, friendId: id, accepted: true },
+          { userId: id, friendId: user.id, accepted: true },
+        ],
+      },
+    });
+    if (!existingFriend) {
+      return res.status(400).send({ error: 'No friend request found' });
+    }
+    const updatedFriend = await this.prisma.friend.deleteMany({
+      where: {
+        OR: [
+          { userId: user.id, friendId: id },
+          { userId: id, friendId: user.id },
+        ],
+      },
+    });
+    if (!updatedFriend) {
+      return res.status(400).send({ error: 'Failed to remove friend' });
+    }
+    return res.status(200).json({ success: true, msg: 'User removed!' });
   }
 }

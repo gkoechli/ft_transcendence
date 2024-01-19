@@ -8,7 +8,7 @@ export class FriendService {
   async getAllFriendsTypes(userId: number) {
     const rawFriends = await this.prisma.friend.findMany({
       where: {
-        friendId: userId,
+        OR: [{ friendId: userId }, { userId: userId }],
       },
       include: {
         friend: {

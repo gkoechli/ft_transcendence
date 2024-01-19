@@ -187,6 +187,49 @@ export class UserController {
     res.status(200).send(updatedUser);
   }
 
+  @Get('all')
+  async getAllUser(@Req() req: Request, @Res() res: Response) {
+    if (!(await this.authService.isLoggedIn(req))) {
+      return res.status(401).json({ error: 'forbidden' });
+    }
+
+    const reqUser = await this.authService.getLoggedInUser(req);
+    if (!reqUser) {
+      return res.status(400).send({ error: 'No user found' });
+    }
+
+    const users = await this.prisma.user.findMany({
+      where: {},
+      select: {
+        id: true,
+        username: true,
+        pfp: true,
+        status: true,
+        inGame: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    const friends = await this.friendService.getAllFriendsTypes(reqUser.id);
+    const newUsers = [];
+    for (const user of users) {
+      if (!user) continue;
+      if (user.id === reqUser.id) continue;
+      let isFriend = false;
+      for (const friend of friends.friends) {
+        if (!friend) continue;
+        if (friend.id === user.id) {
+          isFriend = true;
+          break;
+        }
+      }
+      newUsers.push({ ...user, isFriend: isFriend });
+    }
+
+    return res.status(200).send(newUsers);
+  }
+
   @Get(':id')
   async getUser(@Req() req: Request, @Res() res: Response) {
     if (!(await this.authService.isLoggedIn(req))) {
@@ -223,10 +266,20 @@ export class UserController {
       return res.status(404).send({ error: 'No user found' });
     }
 
+    const friends = await this.friendService.getAllFriendsTypes(reqUser.id);
+    let isFriend = false;
+    for (const friend of friends.friends) {
+      if (!friend) continue;
+      if (friend.id === id) {
+        isFriend = true;
+        break;
+      }
+    }
+
     const data: any = user;
     data.status = false;
     data.isOwnProfile = reqUser.id === user.id;
-    data.isFriend = true; // TODO: IMPLEMENT FRIENDS
+    data.isFriend = isFriend;
     data.isBlocked = false; // TODO: IMPLEMENT BLOCKS
     data.ranking = 2;
     data.totalGamesPlayed = 299;

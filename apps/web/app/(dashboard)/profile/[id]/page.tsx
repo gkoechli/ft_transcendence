@@ -20,7 +20,8 @@ import { Eye, Swords, MoreHorizontal, Trophy, Gamepad2, Crown, UserPlus } from "
 import GameHistory from "./_components/game-history";
 import Link from "next/link";
 import useSWR from "swr";
-import { swrFetcher } from "@web/utils/fetcher";
+import { fetcher, swrFetcher } from "@web/utils/fetcher";
+import { toast } from "sonner";
 
 interface Tracker {
 	color: Color;
@@ -28,7 +29,7 @@ interface Tracker {
 }
 
 export default function UserPage({ params }: { params: { id: string } }) {
-	const { data: user, error, isLoading, mutate } = useSWR(`/user/${params.id}`, swrFetcher)
+	const { data: user, error, isLoading, mutate } = useSWR(`/user/${params.id}`, swrFetcher, { refreshInterval: 1000 })
 	if (isLoading) return <div>Loading...</div>
 	if (error || !user.id) return <div>Error, user does not exists</div>
 
@@ -67,7 +68,21 @@ export default function UserPage({ params }: { params: { id: string } }) {
 								<TooltipProvider>
 									<Tooltip>
 										<TooltipTrigger disabled={user.isOwnProfile} asChild>
-											<Button size="sm" variant="ghost" className="hover:bg-gray-700">
+											<Button size="sm" variant="ghost" className="hover:bg-gray-700" onClick={async (e) => {
+												e.preventDefault();
+												const res = await fetcher(`/friend/add`, "POST", { id: user.id });
+												mutate();
+												if (res.status === 200 || res.status === 208) {
+													toast.success(res.json.msg);
+													mutate();
+													return
+												} else if (res.status === 400) {
+													toast.error(res.json.error);
+													mutate();
+													return
+												}
+												toast.error("An unknown error occurred");
+											}}>
 												<UserPlus className="h-4 w-4" />
 											</Button>
 										</TooltipTrigger>
@@ -123,7 +138,21 @@ export default function UserPage({ params }: { params: { id: string } }) {
 											Block user
 										</DropdownMenuItem>}
 									{user && user.isFriend &&
-										<DropdownMenuItem>
+										<DropdownMenuItem onClick={async (e) => {
+											e.preventDefault();
+											const res = await fetcher(`/friend/remove`, "POST", { id: user.id });
+											mutate();
+											if (res.status === 200 || res.status === 208) {
+												toast.success(res.json.msg);
+												mutate();
+												return
+											} else if (res.status === 400) {
+												toast.error(res.json.error);
+												mutate();
+												return
+											}
+											toast.error("An unknown error occurred");
+										}}>
 											Remove friend
 										</DropdownMenuItem>}
 								</DropdownMenuContent>

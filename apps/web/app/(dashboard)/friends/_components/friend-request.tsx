@@ -3,7 +3,7 @@
 import { Card } from "@web/components/card/card";
 import { Badge } from "@web/components/ui/badge";
 import { Button } from "@web/components/ui/button";
-import { Check, X } from "lucide-react";
+import { ArrowUpRight, Check, Loader2, X } from "lucide-react";
 import Image from "next/image";
 import {
 	Tooltip,
@@ -12,73 +12,110 @@ import {
 	TooltipTrigger,
 } from "@web/components/ui/tooltip"
 import Link from "next/link";
+import { fetcher } from "@web/utils/fetcher";
+import { toast } from "sonner";
+import { useState } from "react";
 
-export function FriendRequestCard({ name, avatar, online, inGame }: {
+export function FriendRequestCard({ id, name, avatar, online, inGame }: {
+	id: number,
 	name: string;
 	avatar: string;
 	online: boolean;
 	inGame: boolean;
 }) {
+	const [isLoading, setIsLoading] = useState(false);
 	return (
 		<Card>
-			<Link href={`/profile/${name}`}>
-				<div className="p-6 flex items-center w-full justify-between hover:bg-gray-800">
-					<div className="flex">
-						<div>
-							<Image
-								src={avatar}
-								width={48}
-								height={48}
-								className="rounded-full w-12 h-12"
-								alt="avatar"
-								loading="eager"
-							/>
-						</div>
-						<div className="ml-4">
-							<div className="items-center">
-								<p>
-									{name}
-								</p>
-								<Badge variant={`${online ? "default" : "destructive"}`}>
-									{online ? "Online" : "Offline"}
-								</Badge>
-							</div>
-						</div>
-					</div>
+			<div className="p-6 flex items-center w-full justify-between hover:bg-gray-800">
+				<Link className="flex" href={`/profile/${id}`}>
 					<div>
-						<p className="text-sm text-gray-100">
-							{inGame ? "In Game" : "Not playing"}
-						</p>
+						<Image
+							src={avatar}
+							width={48}
+							height={48}
+							className="rounded-full w-12 h-12"
+							alt="avatar"
+							loading="eager"
+						/>
 					</div>
-					<div className="flex float-right">
-						<TooltipProvider>
-							<Tooltip>
-								<TooltipTrigger asChild>
-									<Button size="sm" variant="ghost" className="hover:bg-green-500">
-										<Check className="h-4 w-4" />
-									</Button>
-								</TooltipTrigger>
-								<TooltipContent>
-									<p>Accept</p>
-								</TooltipContent>
-							</Tooltip>
-						</TooltipProvider>
-
-						<TooltipProvider>
-							<Tooltip>
-								<TooltipTrigger asChild>
-									<Button size="sm" variant="ghost" className="hover:bg-red-500">
-										<X className="h-4 w-4" />
-									</Button>
-								</TooltipTrigger>
-								<TooltipContent>
-									<p>Refuse</p>
-								</TooltipContent>
-							</Tooltip>
-						</TooltipProvider>
+					<div className="ml-4">
+						<div className="items-center">
+							<p className="flex">
+								{name}
+								<ArrowUpRight width={12} height={12} />
+							</p>
+							<Badge variant={`${online ? "default" : "destructive"}`}>
+								{online ? "Online" : "Offline"}
+							</Badge>
+						</div>
 					</div>
+				</Link>
+				<div>
+					<p className="text-sm text-gray-100">
+						{inGame ? "In Game" : "Not playing"}
+					</p>
 				</div>
-			</Link>
-		</Card>
+
+				<div className="flex float-right">
+					<TooltipProvider>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<Button size="sm" variant="ghost" disabled={isLoading} className="hover:bg-green-500" onClick={async (e) => {
+									e.preventDefault();
+									setIsLoading(true);
+									const res = await fetcher(`/friend/accept`, "POST", { id: id });
+									if (res.status === 200 || res.status === 208) {
+										setIsLoading(false);
+										toast.success(res.json.msg);
+										return
+									} else if (res.status === 400) {
+										setIsLoading(false);
+										toast.error(res.json.error);
+										return
+									}
+									setIsLoading(false);
+									toast.error("An unknown error occurred");
+								}}>
+									{isLoading ? <Loader2 className="animate-spin" /> : <Check className="h-4 w-4" />}
+								</Button>
+							</TooltipTrigger>
+							<TooltipContent asChild>
+								<Button size="sm" variant="ghost" className="hover:bg-green-500">
+									<p>Accept</p>
+								</Button>
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
+
+					<TooltipProvider>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<Button size="sm" variant="ghost" disabled={isLoading} className="hover:bg-red-500" onClick={async (e) => {
+									e.preventDefault();
+									setIsLoading(true);
+									const res = await fetcher(`/friend/refuse`, "POST", { id: id });
+									if (res.status === 200 || res.status === 208) {
+										setIsLoading(false);
+										toast.success(res.json.msg);
+										return
+									} else if (res.status === 400) {
+										setIsLoading(false);
+										toast.error(res.json.error);
+										return
+									}
+									setIsLoading(false);
+									toast.error("An unknown error occurred");
+								}}>
+									{isLoading ? <Loader2 className="animate-spin" /> : <X className="h-4 w-4" />}
+								</Button>
+							</TooltipTrigger>
+							<TooltipContent>
+								<p>Refuse</p>
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
+				</div>
+			</div>
+		</Card >
 	)
 }

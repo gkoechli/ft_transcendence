@@ -9,7 +9,7 @@ import { CommandDialogComp } from "./_components/command-dialog";
 
 export default function Home() {
 	const { data, error, isLoading, mutate } = useSWR('/friend/all', swrFetcher, { refreshInterval: 1000 })
-	if (isLoading) return <div>Loading...</div>
+	if (isLoading) return <div className="animate-pulse">Loading...</div>
 	if (error || !data) return <div>Error</div>
 
 	return (

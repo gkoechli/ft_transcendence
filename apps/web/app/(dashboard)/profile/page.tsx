@@ -11,7 +11,7 @@ import { User } from "@web/types/types";
 
 export default function Home() {
 	const { data: user, error, isLoading, mutate } = useSWR('/user/me', swrFetcher)
-	if (isLoading) return <div>Loading...</div>
+	if (isLoading) return <div className="animate-pulse">Loading...</div>
 	if (error || !user.id) return <div>Error</div>
 
 	return (

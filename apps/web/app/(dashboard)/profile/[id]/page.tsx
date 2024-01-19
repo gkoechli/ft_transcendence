@@ -30,7 +30,7 @@ interface Tracker {
 
 export default function UserPage({ params }: { params: { id: string } }) {
 	const { data: user, error, isLoading, mutate } = useSWR(`/user/${params.id}`, swrFetcher, { refreshInterval: 1000 })
-	if (isLoading) return <div>Loading...</div>
+	if (isLoading) return <div className="animate-pulse">Loading...</div>
 	if (error || !user.id) return <div>Error, user does not exists</div>
 
 	return (

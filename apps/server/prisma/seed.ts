@@ -9,7 +9,7 @@ async function main() {
   for (let i = 0; i < userAmount; i++) {
     const user: User = await prisma.user.create({
       data: {
-        id42: faker.number.int({ max: 100000 }),
+        id42: faker.number.int({ max: 10000000 }),
         username: faker.internet.userName(),
         email: faker.internet.email(),
       },

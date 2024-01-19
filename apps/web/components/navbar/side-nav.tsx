@@ -10,6 +10,7 @@ import { Button } from "../ui/button";
 import { useEffect } from "react";
 import useSWR from "swr";
 import { swrFetcher } from "@web/utils/fetcher";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export function DashboardNav() {
 	const path = usePathname()
@@ -93,13 +94,10 @@ export function DashboardNav() {
 							<div className="flex items-center justify-between">
 								<div className="group flex">
 									<div>
-										<Image
-											className="inline-block h-10 w-10 rounded-full"
-											src={user?.pfp}
-											alt="loading..."
-											width={40}
-											height={40}
-										/>
+										<Avatar className="mr-2 h-10 w-10 select-none" tabIndex={-1}>
+											<AvatarImage className="rounded-full" alt="User Avatar" src={user?.pfp} tabIndex={-1} />
+											<AvatarFallback>U</AvatarFallback>
+										</Avatar>
 									</div>
 									<div className="ml-3 flex">
 										<Link href={`/profile`}>

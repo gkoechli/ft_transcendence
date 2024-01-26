@@ -125,7 +125,7 @@ export class UserController {
     // send otp to email
     try {
       const status = await sendEmail({
-        to: user.email,
+        to: user.tfaEnabled ? user.email : email,
         templateId: 'newUser',
         context: {
           token: OTPToken,

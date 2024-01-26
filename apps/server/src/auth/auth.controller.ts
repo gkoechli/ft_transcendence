@@ -31,7 +31,7 @@ export class AuthController {
         token: this.jwtService.sign({
           id: 1,
           username: 'oaarsse',
-          email: 'oaarsse@student.42.fr',
+          email: 'oddon@aarsse.com',
         }),
       });
     }
@@ -103,7 +103,7 @@ export class AuthController {
       } catch (error) {
         return res.status(500).json({
           success: false,
-          error: 'Failed to send email',
+          error: 'Failed to send email, please retry to login.',
         });
       }
       // send OTP step to client

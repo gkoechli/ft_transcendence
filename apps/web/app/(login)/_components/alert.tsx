@@ -86,7 +86,7 @@ export default function OTPAlert({ open, setOpen, email }: { open: boolean, setO
 				<AlertDialogHeader>
 					<AlertDialogTitle>OTP Verification</AlertDialogTitle>
 					<AlertDialogDescription>
-						You{"'"}ve enabled OTP verification for your account. Please enter the OTP sent to your email.
+						You{"'"}ve enabled OTP verification for your account. Please enter the OTP sent to <b>{email}</b>.
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<Form {...form}>

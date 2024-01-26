@@ -57,7 +57,7 @@ export function DashboardNav() {
 											key={item.href + " " + index}
 											href={item.href}
 											className={cn(
-												path === item.href
+												path.includes(item.href)
 													? 'text-white'
 													: 'text-gray-200',
 												'group flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-gray-700'
@@ -65,21 +65,21 @@ export function DashboardNav() {
 										>
 											<item.icon
 												className={cn(
-													path === item.href ? 'text-white' : 'text-gray-400 group-hover:text-gray-100',
+													path.includes(item.href) ? 'text-white' : 'text-gray-400 group-hover:text-gray-100',
 													'mr-3 h-6 w-6'
 												)}
 												aria-hidden="true"
 											/>
 											<span className={cn(
 												"flex-1",
-												path === item.href ? 'text-white font-bold' : 'text-gray-400 group-hover:text-gray-100'
+												path.includes(item.href) ? 'text-white font-bold' : 'text-gray-400 group-hover:text-gray-100'
 											)}>{item.title}</span>
 											{!isLoading && user && user.notifications && ((user.notifications.friendRequests > 0 && item.href.includes("/friends")) || (user.notifications.chats > 0 && item.href.includes("/chat"))) ? (
 												<span
 													className="ml-3 inline-block rounded-full py-0.5 px-3 text-xs font-bold bg-blue-600 text-white"
 												>
 													{
-														item.href === "/friends" ? user.notifications.friendRequests : item.href === "/chat" ? user.notifications.chats : null
+														item.href.includes("/friends") ? user.notifications.friendRequests : item.href.includes("/chat") ? user.notifications.chats : null
 													}
 												</span>
 											) : null}
